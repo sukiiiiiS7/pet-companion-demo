@@ -1,11 +1,18 @@
-# 🐾 Virtual Pet AI Companion — by S7
+# Virtual Pet AI Companion — by S7
 
 This is a **personal interactive AI pet project** that blends frame-by-frame **pixel animation**, emotional state logic, and a floating web companion. It began as a creative experiment — what if an AI pet didn’t just respond, but remembered?
 
 All animations were drawn by me, pixel by pixel, and the system’s logic was written and trained in Python. The pet floats quietly on your screen, waiting for you to come home.
 
 ---
+# 🐾 Pet Companion Demo
 
+**Try it live:**  
+👉 [https://sukiiiiiS7.github.io/pet-companion-demo/](https://sukiiiiiS7.github.io/pet-companion-demo/)
+
+A pixel-based emotional pet simulation – featuring hand-drawn frame-by-frame animations and lightweight web demo.
+
+---
 ## Features
 
 - 🐱 Floating pixel cat that blinks and follows you
