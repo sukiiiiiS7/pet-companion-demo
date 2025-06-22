@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Virtual Pet Companion</title>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Press Start 2P', cursive;
+      background: url('background.PNG') repeat;
+      background-size: 300px;
+      color: #333;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0, 0, 0, 0.45);
+      z-index: -1;
+      backdrop-filter: blur(3px) saturate(130%);
+      animation: bgfloat 10s ease-in-out infinite alternate;
+    }
+
+    @keyframes bgfloat {
+      0% { transform: scale(1); }
+      100% { transform: scale(1.02); }
+    }
+
+    .overlay {
+      background-color: rgba(255, 255, 255, 0.85);
+      backdrop-filter: blur(4px);
+      padding: 2rem;
+      border-radius: 16px;
+      max-width: 800px;
+      margin: 3rem auto;
+      text-align: center;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.25);
+      animation: fadeIn 0.8s ease-out;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: scale(0.95); }
+      to { opacity: 1; transform: scale(1); }
+    }
+
+    h1, h2 {
+      animation: glow 2.5s ease-in-out infinite alternate;
+    }
+
+    @keyframes glow {
+      from { text-shadow: 0 0 2px #fff, 0 0 5px #ccc; }
+      to { text-shadow: 0 0 5px #fff, 0 0 10px #f5d481; }
+    }
+
+    .logo {
+      width: 100px;
+      margin: 1rem auto;
+      display: block;
+      transition: transform 0.2s ease;
+    }
+
+    .logo:hover {
+      transform: scale(1.05);
+      opacity: 0.8;
+    }
+
+    .meow-tip {
+      font-size: 0.5rem;
+      margin-top: 0.3rem;
+      color: #555;
+      text-shadow: 0 0 1px #fff;
+      animation: floatMeow 2.5s infinite ease-in-out;
+    }
+
+    @keyframes floatMeow {
+      0%, 100% { transform: translateY(0); opacity: 0.6; }
+      50% { transform: translateY(-3px); opacity: 1; }
+    }
+
+    video {
+      width: 100%;
+      max-width: 700px;
+      border-radius: 16px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+      cursor: pointer;
+    }
+
+    p {
+      font-size: 0.7rem;
+      line-height: 1.6;
+      color: #222;
+      text-shadow: 1px 1px #aaa, 0 0 1px #fff;
+    }
+
+    .about {
+      font-size: 0.65rem;
+      color: #222;
+      margin-top: 1rem;
+      line-height: 1.6;
+    }
+
+    .memory-btn {
+      margin-top: 1rem;
+      font-size: 0.6rem;
+      padding: 0.5rem 1rem;
+      border-radius: 8px;
+      font-family: 'Press Start 2P';
+      cursor: pointer;
+      background: #f5d481;
+      border: none;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+    }
+
+    #memoryBox {
+      display: none;
+      font-size: 0.6rem;
+      text-align: left;
+      margin-top: 1.5rem;
+      background: rgba(255,255,255,0.6);
+      padding: 1rem;
+      border-radius: 12px;
+      line-height: 1.8;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+      white-space: pre-line;
+    }
+
+    /* 🐾 Floating Cat */
+    #floating-cat {
+      position: fixed;
+      width: 120px;
+      height: 120px;
+      z-index: 10000;
+      cursor: pointer;
+      image-rendering: pixelated;
+      transition: transform 0.2s ease;
+    }
+    #catImg {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+    .cat-bubble {
+      position: absolute;
+      bottom: 90px;
+      left: -10px;
+      max-width: 160px;
+      background: rgba(255, 255, 255, 0.95);
+      border: 1px solid #ccc;
+      border-radius: 12px;
+      padding: 0.4rem 0.6rem;
+      font-size: 0.45rem;
+      font-family: 'Press Start 2P', cursive;
+      box-shadow: 2px 2px 6px rgba(0,0,0,0.2);
+      color: #333;
+      text-align: left;
+      animation: fadeBubble 3s ease-in-out 1;
+    }
+
+    @keyframes fadeBubble {
+      0% { opacity: 0; transform: translateY(5px); }
+      10% { opacity: 1; transform: translateY(0); }
+      90% { opacity: 1; }
+      100% { opacity: 0; transform: translateY(-5px); }
+    }
+
+
+  </style>
+</head>
+<body>
+  <div class="overlay">
+    <h1>Virtual Pet Companion</h1>
+    <h2>A Gentle AI That Responds to You</h2>
+
+    <img src="logo.png" alt="Logo" class="logo" onmouseenter="playMeow()" />
+    <p class="meow-tip">🐾 Hover the logo to hear a meow!</p>
+
+    <video controls poster="preview.png" preload="none">
+      <source src="DEMO.mp4" type="video/mp4">
+      Your browser does not support the video tag.
+    </video>
+
+    <button class="memory-btn" onclick="toggleMemory()">🧠 See Pet's Memory</button>
+    <div id="memoryBox"></div>
+
+    <p>This is a <strong>pixel-based virtual companion</strong>.<br />
+       Feed it. Pet it. Let it dream.<br />
+       Every action leaves a trace in its memory.</p>
+
+    <p class="about">
+      Crafted with Python, Pygame, and a self‑evolving memory file.<br />
+      Your care becomes part of its world — stored in memory.txt.
+    </p>
+  </div>
+
+  <div id="floating-cat">
+  <img src="cat1.png" id="catImg" width="80" height="80" />
+  <div class="cat-bubble">Welcome home. Long day... I missed you.</div>
+</div>
+
+
+  <audio id="meowSound" src="cat-meow.wav"></audio>
+
+  <script>
+    const audio = document.getElementById('meowSound');
+
+    document.addEventListener('click', () => {
+      audio.play().then(() => {
+        audio.pause();
+        audio.currentTime = 0;
+      }).catch(() => {});
+    }, { once: true });
+
+    function playMeow() {
+      audio.currentTime = 0;
+      audio.play().catch(() => {});
+    }
+
+    let memoryVisible = false;
+
+    function toggleMemory() {
+      const box = document.getElementById('memoryBox');
+      const btn = document.querySelector('.memory-btn');
+
+      if (memoryVisible) {
+        box.style.display = 'none';
+        btn.innerText = '🧠 See Pet\'s Memory';
+        memoryVisible = false;
+        return;
+      }
+
+      const memory = {
+        "breed_id": 1,
+        "health": 100,
+        "hunger": 15,
+        "energy": 100,
+        "affection": 100,
+        "playfulness": 100,
+        "stress": 45,
+        "action": "feed",
+        "mood": "pet",
+        "feed_lock_until": 120602,
+        "last_action": "scold",
+        "last_mood": "playful"
+      };
+
+      const moodMap = {
+        "pet": "is being petted 🐾",
+        "playful": "was playful 🎮",
+        "scold": "was scolded 😿",
+        "feed": "got food 🍖"
+      };
+
+      const lines = [
+        `🐾 Breed: ${memory.breed_id}`,
+        `❤️ Affection: ${memory.affection}`,
+        `🍖 Hunger: ${memory.hunger} → ${memory.hunger < 30 ? "slightly hungry" : "very hungry!"}`,
+        `⚡ Energy: ${memory.energy}`,
+        `💥 Stress: ${memory.stress}`,
+        `🎈 Mood: ${moodMap[memory.mood] || memory.mood}`,
+        `🕹️ Last Action: ${moodMap[memory.last_action] || memory.last_action}`,
+        `🎮 Last Mood: ${moodMap[memory.last_mood] || memory.last_mood}`,
+        `🔒 Feed Lock Until: ${memory.feed_lock_until}`
+      ];
+
+      box.innerHTML = '';
+      box.style.display = 'block';
+      btn.innerText = '🔙 Hide Memory';
+      memoryVisible = true;
+
+      let i = 0;
+      function printNextLine() {
+        if (i < lines.length) {
+          const line = document.createElement('div');
+          line.textContent = lines[i];
+          line.style.opacity = 0;
+          line.style.transition = 'opacity 0.5s ease';
+          box.appendChild(line);
+          requestAnimationFrame(() => { line.style.opacity = 1; });
+          i++;
+          setTimeout(printNextLine, 450);
+        }
+      }
+
+      printNextLine();
+    }
+
+    // 🐾 Floating Cat Logic
+    const catFrames = ["cat1.png", "cat2.png", "cat3.png", "cat4.png"];
+    let frame = 0;
+    const catImg = document.getElementById("catImg");
+    const floatingCat = document.getElementById("floating-cat");
+
+    setInterval(() => {
+      frame = (frame + 1) % catFrames.length;
+      catImg.src = catFrames[frame];
+    }, 300);
+
+    function moveCat() {
+      const positions = [
+        { top: "20px", left: "20px" },
+        { top: "20px", right: "20px" },
+        { bottom: "20px", left: "20px" },
+        { bottom: "20px", right: "20px" },
+      ];
+      const pos = positions[Math.floor(Math.random() * positions.length)];
+      floatingCat.style.top = pos.top || "";
+      floatingCat.style.left = pos.left || "";
+      floatingCat.style.right = pos.right || "";
+      floatingCat.style.bottom = pos.bottom || "";
+    }
+
+    moveCat();
+    setInterval(moveCat, 15000);
+
+    floatingCat.addEventListener("click", () => {
+      audio.currentTime = 0;
+      audio.play().catch(() => {});
+    });
+  </script>
+</body>
+</html>
